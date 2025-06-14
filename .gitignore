@@ -1,0 +1,48 @@
+# ----------------------------
+# Node / Backend
+# ----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+coverage/
+.env
+.env.*        # .env.local, .env.prod, etc.
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# PM2 logs
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Database dumps
+dump.rdb
+*.sqlite
+
+# ----------------------------
+# Frontend (Vite + React)
+# ----------------------------
+# Vite build output
+frontend/dist/
+# React build output (legacy CRA, if any)
+build/
+
+# ----------------------------
+# IDE / Editor junk
+# ----------------------------
+.vscode/
+.idea/
+*.sw?           # Sublime
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.DS_Store
+Thumbs.db

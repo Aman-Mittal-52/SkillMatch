@@ -1,0 +1,285 @@
+
+⸻
+
+JobDekho API Documentation
+
+Base URL:
+http://localhost:5000/api
+
+⸻
+
+Authentication Endpoints
+
+1. Register (Email/Password)
+	•	Method: POST
+	•	Path: /auth/register
+	•	Headers:
+	•	Content-Type: application/json
+	•	Body:
+
+{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "password": "securePassword"
+}
+
+
+	•	Response (201):
+
+{
+  "user": {
+    "id": "<userId>",
+    "name": "Alice",
+    "email": "alice@example.com",
+    "role": "seeker"
+  },
+  "token": "<jwt>"
+}
+
+
+
+⸻
+
+2. Login (Email/Password)
+	•	Method: POST
+	•	Path: /auth/login
+	•	Headers:
+	•	Content-Type: application/json
+	•	Body:
+
+{
+  "email": "alice@example.com",
+  "password": "securePassword"
+}
+
+
+	•	Response (200):
+
+{
+  "user": { ... },
+  "token": "<jwt>"
+}
+
+
+
+⸻
+
+3. Google OAuth
+	1.	Redirect to Google
+	•	Method: GET
+	•	Path: /auth/google
+	2.	Callback
+	•	Method: GET
+	•	Path: /auth/google/callback
+	•	Response: Redirect to FRONTEND_URL with ?token=<jwt>
+
+⸻
+
+Note: Protected endpoints require header:
+
+Authorization: Bearer <jwt>
+
+
+
+⸻
+
+User Endpoints
+
+1. Get Profile
+	•	Method: GET
+	•	Path: /users/me
+	•	Response (200):
+
+{
+  "id": "<userId>",
+  "name": "Alice",
+  "email": "alice@example.com",
+  "role": "seeker",
+  "resumeUrls": [ ... ]
+}
+
+
+
+⸻
+
+2. Upload Resume
+	•	Method: POST
+	•	Path: /users/me/resume
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Content-Type: multipart/form-data
+	•	Body:
+	•	file: (PDF/image)
+	•	Response (200):
+
+{
+  "url": "https://res.cloudinary.com/.../jobdekho/..."
+}
+
+
+
+⸻
+
+Job Endpoints
+
+1. List Jobs
+	•	Method: GET
+	•	Path: /jobs
+	•	Response (200):
+
+[
+  {
+    "_id": "<jobId>",
+    "title": "...",
+    "companyName": "...",
+    "postedBy": { "name": "...", "email": "..." },
+    ...
+  },
+  ...
+]
+
+
+
+⸻
+
+2. Get Job Details
+	•	Method: GET
+	•	Path: /jobs/:id
+	•	Response (200):
+
+{
+  "_id": "<jobId>",
+  "title": "...",
+  ...
+}
+
+
+
+⸻
+
+3. Create Job (Recruiter)
+	•	Method: POST
+	•	Path: /jobs
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Content-Type: application/json
+	•	Body:
+
+{
+  "title": "Software Engineer",
+  "companyName": "Acme Corp",
+  "description": "...",
+  "location": "Remote",
+  "tags": ["JavaScript","Node.js"]
+}
+
+
+	•	Response (201):
+
+{ ...job object... }
+
+
+
+⸻
+
+4. Update Job (Recruiter)
+	•	Method: PUT
+	•	Path: /jobs/:id
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Content-Type: application/json
+	•	Body: Partial or full job fields to update
+	•	Response (200):
+
+{ ...updated job... }
+
+
+
+⸻
+
+5. Delete Job (Recruiter)
+	•	Method: DELETE
+	•	Path: /jobs/:id
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Response (204): No content
+
+⸻
+
+Application Endpoints
+
+1. Apply to Job
+	•	Method: POST
+	•	Path: /jobs/:jobId/apply
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Content-Type: multipart/form-data
+	•	Body:
+	•	file: (PDF/image resume)
+	•	Response (200):
+
+{
+  "resumeUrl": "https://...",
+  "applicationId": "<id>"
+}
+
+
+
+⸻
+
+2. List My Applications
+	•	Method: GET
+	•	Path: /applications/me
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Response (200):
+
+[
+  { "_id": "<appId>", "jobId": { ... }, "status": "applied" },
+  ...
+]
+
+
+
+⸻
+
+3. Update Application Status (Recruiter)
+	•	Method: PUT
+	•	Path: /applications/:appId/status
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Content-Type: application/json
+	•	Body:
+
+{ "status": "shortlisted" }
+
+
+	•	Response (200):
+
+{ ...updated application... }
+
+
+
+⸻
+
+4. List Applications for Job (Recruiter)
+	•	Method: GET
+	•	Path: /applications/job/:jobId
+	•	Headers:
+	•	Authorization: Bearer <jwt>
+	•	Response (200):
+
+[
+  { "_id": "<appId>", "seekerId": { ... }, "status": "applied" },
+  ...
+]
+
+
+
+⸻
+
+Notes:
+	•	All timestamps use ISO 8601.
+	•	Error responses use JSON:
+
+{ "message": "Error description" }
