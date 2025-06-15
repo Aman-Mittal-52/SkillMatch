@@ -15,6 +15,7 @@ exports.createJob = async (req, res, next) => {
       whatsappNumber,
       salary,
       tags,
+      jobType,
     } = req.body;
 
     if (
@@ -31,6 +32,7 @@ exports.createJob = async (req, res, next) => {
       );
     }
 
+    // Create new job with optional jobType (defaults in schema)
     const job = await Job.create({
       title,
       companyName,
@@ -41,6 +43,7 @@ exports.createJob = async (req, res, next) => {
       whatsappNumber,
       salary,
       tags: tags || [],
+      jobType,
       postedBy: req.user.id,
     });
 
@@ -50,13 +53,48 @@ exports.createJob = async (req, res, next) => {
   }
 };
 
-/* ---------- LIST ALL OPEN JOBS ---------- */
+/* ---------- LIST All Open Jobs, with optional filters ---------- */
 exports.getAllJobs = async (req, res, next) => {
   try {
-    const jobs = await Job.find({ status: 'open' }).populate(
-      'postedBy',
-      'name email'
-    );
+    const { search, type, sortBy } = req.query;
+    const query = { status: 'open' };
+
+    // Text search?
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    // Filter by jobType?
+    if (type) {
+      const allowedTypes = [
+        'full-time',
+        'part-time',
+        'internship',
+        'freelance',
+        'temporary',
+      ];
+      if (!allowedTypes.includes(type)) {
+        return res.status(400).json({ message: `Invalid job type: ${type}` });
+      }
+      query.jobType = type;
+    }
+
+    // Sorting logic
+    let sort = { createdAt: -1 }; // default newest first
+    if (sortBy === 'oldest') {
+      sort = { createdAt: 1 };
+    } else if (search) {
+      // if doing a text search, sort by relevance
+      sort = { score: { $meta: 'textScore' } };
+    }
+
+    // Projection for text score
+    const projection = search ? { score: { $meta: 'textScore' } } : {};
+
+    const jobs = await Job.find(query, projection)
+      .sort(sort)
+      .populate('postedBy', 'name email');
+
     res.json(jobs);
   } catch (err) {
     next(err);
@@ -86,6 +124,7 @@ exports.updateJob = async (req, res, next) => {
       throw createError(403, 'Not authorized to update this job');
     }
 
+    // Merge updates (including jobType if provided)
     Object.assign(job, req.body);
     const updated = await job.save();
     res.json(updated);
@@ -109,7 +148,7 @@ exports.deleteJob = async (req, res, next) => {
   }
 };
 
-/* ---------- KEYWORD SEARCH ---------- */
+/* ---------- KEYWORD SEARCH (optional) ---------- */
 exports.searchJobs = async (req, res, next) => {
   try {
     const { query } = req.query;

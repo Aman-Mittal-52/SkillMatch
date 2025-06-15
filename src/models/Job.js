@@ -13,6 +13,7 @@ const jobSchema = new mongoose.Schema(
     salary:       { type: String, trim: true },
     tags:         { type: [String], default: [] },
     postedBy:     { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    jobType:      { type: String, enum: ['full-time', 'part-time', 'internship', 'freelance', 'temporary'], default: 'full-time', required: true },
     status:       { type: String, enum: ['open', 'closed'], default: 'open' },
   },
   { timestamps: true }
@@ -25,6 +26,7 @@ jobSchema.index({
   companyName: 'text',
   location: 'text',
   tags: 'text',
+  jobType: 'text',
 });
 
 module.exports = mongoose.model('Job', jobSchema);
