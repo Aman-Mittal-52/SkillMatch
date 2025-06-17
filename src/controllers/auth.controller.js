@@ -20,7 +20,6 @@ exports.register = async (req, res, next) => {
       );
     }
     if (await User.findOne({ email }))        throw createError(409, 'Email already in use');
-    if (await User.findOne({ mobileNumber })) throw createError(409, 'Mobile number already in use');
 
     const allowedRoles = ['seeker', 'recruiter'];
     const userRole =
