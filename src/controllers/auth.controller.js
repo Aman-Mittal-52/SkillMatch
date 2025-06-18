@@ -65,6 +65,7 @@ exports.login = async (req, res, next) => {
 
     const user = await User.findOne(query);
     if (!user) throw createError(404, 'Account not found');
+    if (user.isBanned) throw createError(403, 'This account has been banned');
     if (!(await user.validatePassword(password)))
       throw createError(401, 'Incorrect password');
 

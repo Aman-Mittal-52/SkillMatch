@@ -10,10 +10,25 @@ const app = express();
 // --- Global Middleware ---
 app.use(helmet());
 // app.use(cors({ origin: process.env.FRONTEND_URL }));
-app.use(cors({ origin: '*' }));
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(rateLimit({ windowMs: 60_000, max: 100 }));
 app.use(morgan('tiny'));
+
+// Log CORS requests for debugging
+app.use((req, res, next) => {
+  console.log('CORS Request:', {
+    origin: req.headers.origin,
+    method: req.method,
+    path: req.path
+  });
+  next();
+});
 
 // --- Route Mounts ---
 app.use('/api/auth', require('./routes/auth.routes'));
