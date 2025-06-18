@@ -43,6 +43,16 @@ app.use('/api/jobs', require('./routes/job.routes'));
 app.use('/api/applications', require('./routes/application.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
 
+// Route to expose all environment variables (for debugging ONLY - REMOVE in production!)
+app.get('/env', (req, res) => {
+  // Log the request for debugging
+  console.log('GET /env called');
+  // Log all environment variables to the console
+  console.log('Current process.env:', process.env);
+  // Send all environment variables as JSON response
+  res.json(process.env);
+});
+
 // --- Error Handler ---
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message });
