@@ -168,3 +168,16 @@ exports.searchJobs = async (req, res, next) => {
     next(err);
   }
 };
+
+/* ---------- GET JOBS BY RECRUITER ---------- */
+exports.getJobsByRecruiter = async (req, res, next) => {
+  try {
+    const jobs = await Job.find({ postedBy: req.user.id })
+      .sort({ createdAt: -1 })
+      .populate('postedBy', 'name email');
+    
+    res.json(jobs);
+  } catch (err) {
+    next(err);
+  }
+};

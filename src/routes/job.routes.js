@@ -20,6 +20,13 @@ router.post(
 );
 
 /* ---------- RECRUITER ROUTES ---------- */
+router.get(
+  '/posted',
+  verifyToken,
+  requireRole('recruiter'),
+  jobController.getJobsByRecruiter
+);
+
 router.post(
   '/',
   verifyToken,
