@@ -20,6 +20,11 @@ app.use(express.json());
 app.use(rateLimit({ windowMs: 60_000, max: 100 }));
 app.use(morgan('tiny'));
 
+// Initialize Passport.js for authentication
+const passport = require('passport');
+require('./config/passport'); // Load passport configuration
+app.use(passport.initialize());
+
 // Log CORS requests for debugging
 app.use((req, res, next) => {
   console.log('CORS Request:', {
