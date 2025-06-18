@@ -25,7 +25,8 @@ app.use((req, res, next) => {
   console.log('CORS Request:', {
     origin: req.headers.origin,
     method: req.method,
-    path: req.path
+    path: req.path,
+    req:req
   });
   next();
 });
