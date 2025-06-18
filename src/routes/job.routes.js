@@ -21,7 +21,7 @@ router.post(
 
 /* ---------- RECRUITER ROUTES ---------- */
 router.get(
-  '/my-jobs',
+  '/recruiter/jobs',
   verifyToken,
   requireRole('recruiter'),
   jobController.getJobsByRecruiter
