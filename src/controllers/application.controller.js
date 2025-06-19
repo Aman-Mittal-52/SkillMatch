@@ -22,6 +22,16 @@ exports.applyToJob = async (req, res, next) => {
       throw createError(404, 'Job not available');
     }
 
+    // Check if user has already applied to this job
+    const existingApplication = await Application.findOne({
+      jobId,
+      seekerId: req.user.id
+    });
+
+    if (existingApplication) {
+      throw createError(400, 'You have already applied to this job');
+    }
+
     const resumeUrl = req.file ? req.file.path : undefined; // resume optional
 
     const application = await Application.create({
