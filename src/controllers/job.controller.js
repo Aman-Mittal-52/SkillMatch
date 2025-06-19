@@ -141,7 +141,7 @@ exports.deleteJob = async (req, res, next) => {
     if (job.postedBy.toString() !== req.user.id) {
       throw createError(403, 'Not authorized to delete this job');
     }
-    await job.remove();
+    await Job.deleteOne({ _id: job._id });
     res.status(204).end();
   } catch (err) {
     next(err);
