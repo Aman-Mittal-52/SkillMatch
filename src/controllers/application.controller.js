@@ -29,7 +29,7 @@ exports.applyToJob = async (req, res, next) => {
     });
 
     if (existingApplication) {
-      throw createError(400, 'You have already applied to this job');
+      throw createError(200, 'You have already applied to this job');
     }
 
     const resumeUrl = req.file ? req.file.path : undefined; // resume optional
