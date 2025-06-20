@@ -60,7 +60,7 @@ exports.updateProfile = async (req, res, next) => {
 exports.uploadResume = async (req, res, next) => {
   try {
     if (!req.file || !req.file.path) {
-      throw createError(400, 'No file uploaded');
+      throw createError(200, 'No file uploaded');
     }
 
     // req.file.path is the Cloudinary URL
