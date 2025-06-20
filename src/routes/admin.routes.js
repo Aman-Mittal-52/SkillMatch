@@ -9,6 +9,7 @@ router.use(verifyToken, requireRole('admin'));
 /* User management */
 router.get('/users', adminCtrl.listUsers);
 router.put('/users/:id/ban', adminCtrl.toggleBan);
+router.delete('/users/:id', adminCtrl.deleteUser);
 
 /* Job moderation */
 router.get('/jobs', adminCtrl.listJobs);

@@ -45,6 +45,20 @@ exports.toggleBan = async (req, res, next) => {
 };
 
 /* ------------------------------------------------------------------ */
+/*  DELETE /api/admin/users/:id                                        */
+/*  Hard-delete user                                                   */
+/* ------------------------------------------------------------------ */
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) throw createError(404, 'User not found');
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* ------------------------------------------------------------------ */
 /*  GET /api/admin/jobs?page=&limit=&status=                           */
 /*  List jobs site-wide                                               */
 /* ------------------------------------------------------------------ */
