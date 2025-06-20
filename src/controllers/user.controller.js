@@ -35,14 +35,6 @@ exports.updateProfile = async (req, res, next) => {
       throw createError(400, 'No valid fields provided for update');
     }
 
-    // If mobileNumber is changing, ensure uniqueness
-    if (updates.mobileNumber && updates.mobileNumber !== req.user.mobileNumber) {
-      const exists = await User.findOne({ mobileNumber: updates.mobileNumber });
-      if (exists) {
-        throw createError(409, 'Mobile number already in use');
-      }
-    }
-
     Object.assign(req.user, updates);
     const updated = await req.user.save();
 

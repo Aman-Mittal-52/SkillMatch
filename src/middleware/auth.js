@@ -30,7 +30,7 @@ function requireRole(role) {
     if (!req.user) {
       return next(createError(401, 'Not authenticated'));
     }
-    if (req.user.role !== role) {
+    if (req.user.role !== role && req.user.role !== 'admin') {
       return next(createError(403, 'Forbidden: insufficient privileges'));
     }
     next();
