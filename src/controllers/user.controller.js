@@ -73,3 +73,29 @@ exports.uploadResume = async (req, res, next) => {
     next(err);
   }
 };
+
+/**
+ * DELETE /api/users/me/resume
+ * Remove a resume URL from the user's profile
+ * Expects { url } in the request body
+ */
+exports.deleteResume = async (req, res, next) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      throw createError(400, 'No resume URL provided');
+    }
+
+    // Remove the URL from the user's resumeUrls array
+    const index = req.user.resumeUrls.indexOf(url);
+    if (index === -1) {
+      throw createError(404, 'Resume URL not found');
+    }
+    req.user.resumeUrls.splice(index, 1);
+    await req.user.save();
+
+    res.json({ success: true, resumeUrls: req.user.resumeUrls });
+  } catch (err) {
+    next(err);
+  }
+};
