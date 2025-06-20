@@ -25,7 +25,7 @@ exports.updateProfile = async (req, res, next) => {
   try {
     const updates = {};
     // whitelist fields you allow to be updated:
-    ['name', 'email'].forEach(field => {
+    ['name', 'mobileNumber'].forEach(field => {
       if (req.body[field] !== undefined) {
         updates[field] = req.body[field];
       }
@@ -35,11 +35,11 @@ exports.updateProfile = async (req, res, next) => {
       throw createError(400, 'No valid fields provided for update');
     }
 
-    // If email is changing, ensure uniqueness
-    if (updates.email && updates.email !== req.user.email) {
-      const exists = await User.findOne({ email: updates.email });
+    // If mobileNumber is changing, ensure uniqueness
+    if (updates.mobileNumber && updates.mobileNumber !== req.user.mobileNumber) {
+      const exists = await User.findOne({ mobileNumber: updates.mobileNumber });
       if (exists) {
-        throw createError(409, 'Email already in use');
+        throw createError(409, 'Mobile number already in use');
       }
     }
 
