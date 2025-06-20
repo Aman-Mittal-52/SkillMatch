@@ -63,6 +63,11 @@ exports.uploadResume = async (req, res, next) => {
       throw createError(400, 'No file uploaded');
     }
 
+    // Enforce a maximum of 6 resumes per user
+    if (req.user.resumeUrls.length >= 9) {
+      throw createError(400, 'You can upload a maximum of 9 resumes only');
+    }
+
     // req.file.path is the Cloudinary URL
     const url = req.file.path;
     req.user.resumeUrls.push(url);
