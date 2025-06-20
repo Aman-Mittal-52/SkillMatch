@@ -80,3 +80,30 @@ exports.deleteJob = async (req, res, next) => {
     next(err);
   }
 };
+
+/* ------------------------------------------------------------------ */
+/*  PUT /api/admin/jobs/:id                                            */
+/*  Update job status (open/closed)                                   */
+/* ------------------------------------------------------------------ */
+exports.updateJobStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    
+    // Validate status value
+    if (!status || !['open', 'closed'].includes(status)) {
+      throw createError(400, 'Status must be either "open" or "closed"');
+    }
+
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!job) throw createError(404, 'Job not found');
+
+    res.json({ id: job.id, status: job.status });
+  } catch (err) {
+    next(err);
+  }
+};

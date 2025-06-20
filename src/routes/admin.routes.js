@@ -13,5 +13,6 @@ router.put('/users/:id/ban', adminCtrl.toggleBan);
 /* Job moderation */
 router.get('/jobs', adminCtrl.listJobs);
 router.delete('/jobs/:id', adminCtrl.deleteJob);
+router.put('/jobs/:id', adminCtrl.updateJobStatus);
 
 module.exports = router;
